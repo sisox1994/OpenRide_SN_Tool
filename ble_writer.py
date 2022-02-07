@@ -59,27 +59,32 @@ async def ble_write(address,char_uuid,data):
     while True:
         try:
                 client = BleakClient(address)
-                if(client.is_connected == True):
-                    print(f"Aleady Connected")
-                    unpaired = await client.unpair()
-                    print(f"unpaired: {unpaired}")
+                #if(client.is_connected == True):
+                #print(f"Aleady Connected")
+
                     # discconect = await client.disconnect()
                     # print(f"discconect: {discconect}") 
 
                 print('start connect...'," ",address)
-                connect = await client.connect(timeout=5.0)
+                connect = await client.connect()
                 print(f"connect: {connect}") 
                  # connect = await client.connect()
                 # print(f"connect: {connect}") 
+                print("try unpair...")
+                unpaired = await client.unpair()
+                print(f"unpaired: {unpaired}")
                 
+                paired  = await client.pair(protection_level=1) #先配對
+                print(f"Paired: {paired}") 
+
                 while client.is_connected:
                     # connect = await client.connect()
                     # print(f"connect: {connect}") 
-                    paired  = await client.pair(protection_level=2) #先配對
-                    print(f"Paired: {paired}") 
 
-                    while paired == True:                    
-
+                    while paired == True:          
+                        # print("wait 10 second")           
+                        await asyncio.sleep(0.5)
+                        print("try notify...")     
                         await client.start_notify(char_uuid, Notify_callback)
                         print("notify ok") 
                         try:
