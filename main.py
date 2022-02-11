@@ -6,6 +6,8 @@ import tkinter as tk
 from tkinter import messagebox
 import ble_scanner
 from ble_writer import ble_write
+import os
+
 
 #Open Ride 寫入序號的 Characteristic
 OPEN_RIDE_CUSTOM_CHAR_UUID = "8EC92001-F315-4F60-9FB8-838830DAEA50"
@@ -173,9 +175,15 @@ def create_BLE_Scan_UI():
     li_frame.pack(side=tk.TOP,fill=tk.X)
     return 0
 
+def window_on_closing():
+    global Background_Exit
+    print("windows close")
+    Background_Exit = True 
 
 def creat_window():
     print('Windows Task thread id:', threading.get_ident())
+    
+    
     global win
     win = tk.Tk()
     win.title('Open Ride SNTool')
@@ -183,6 +191,7 @@ def creat_window():
     create_BLE_Scan_UI()
     create_OpenRide_SN_Input_UI()
 
+    win.protocol("WM_DELETE_WINDOW", window_on_closing)
     win.mainloop()
 
 #uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
@@ -307,9 +316,13 @@ async def do_async_job(func):
 async def main():
 
     task1 = asyncio.create_task(do_async_job(Background_Task)) 
-    task2 = asyncio.create_task(do_async_job(creat_window))  
+    #task2 = asyncio.create_task(do_async_job(creat_window))  
 
-    ret_Values = await asyncio.gather(task1, task2)
+    t = threading.Thread(target=creat_window)
+    t.setDaemon(True)
+    t.start()
+
+    ret_Values = await asyncio.gather(task1)
 
     for ret in ret_Values:
         print("result=",ret)
