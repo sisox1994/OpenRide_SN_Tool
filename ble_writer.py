@@ -59,15 +59,15 @@ async def ble_write(address,char_uuid,data):
     while True:
         try:
                 client = BleakClient(address)
-                if(client.is_connected == True):
-                    print(f"Aleady Connected")
-                    unpaired = await client.unpair()
-                    print(f"unpaired: {unpaired}")
+                # if(client.is_connected == True):
+                #     print(f"Aleady Connected")
+                #     unpaired = await client.unpair()
+                #     print(f"unpaired: {unpaired}")
                     # discconect = await client.disconnect()
                     # print(f"discconect: {discconect}") 
 
                 print('start connect...'," ",address)
-                connect = await client.connect(timeout=5.0)
+                connect = await client.connect()
                 print(f"connect: {connect}") 
                  # connect = await client.connect()
                 # print(f"connect: {connect}") 
@@ -94,13 +94,13 @@ async def ble_write(address,char_uuid,data):
             print("Time out !!")
             return 2                             
         except bleak.exc.BleakError:
-            unpaired = await client.unpair()
-            print(f"unpaired: {unpaired}")
+            #unpaired = await client.unpair()
+            #print(f"unpaired: {unpaired}")
             print("Cant not find device") 
             return 3        
         except OSError:
-            unpaired = await client.unpair()
-            print(f"unpaired: {unpaired}")
+            #unpaired = await client.unpair()
+            #print(f"unpaired: {unpaired}")
             
             print("Bluetooth not Ready!!")  
             return 4  

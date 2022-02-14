@@ -44,7 +44,7 @@ async def ble_scan(rssi_in):
 
     scanner.register_detection_callback(scan_callback)
     await scanner.start()
-    await asyncio.sleep(2.0)
+    await asyncio.sleep(4.0)
     await scanner.stop()
 
     #for dev in scanner.discovered_devices:
@@ -69,7 +69,7 @@ async def ble_scan(rssi_in):
 
 
 if __name__ == "__main__":
-    asyncio.run(ble_scan(-40))      
+    asyncio.run(ble_scan(-60))      
     print('--------------------------------------')
     for dev in scan_devices:
         print(dev.address ," [" ,dev.name,"]")
